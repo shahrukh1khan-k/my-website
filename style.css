@@ -111,7 +111,7 @@ a:focus-visible {
 }
 
 .brand h1 {
-    color: var(--text);
+    color:  #9b8cff !important;
     font-size: 1.65rem;
     font-weight: 800;
     letter-spacing: -1px;
@@ -119,13 +119,14 @@ a:focus-visible {
 }
 
 .brand h1 span {
-    color: var(--primary);
+    color: #9b8cff !important;
 }
 
 .brand p {
     margin-top: 4px;
-    color: var(--muted);
+    color: #cbd5e1 !important;
     font-size: 0.85rem;
+    font-weight: 500;
 }
 
 /* ========================================
