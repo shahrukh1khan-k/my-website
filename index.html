@@ -1,0 +1,260 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#f5f7ff">
+    <meta name="description" content="Shopping Cart Abandonment Analyzer dashboard for tracking checkout sessions and potential revenue recovery.">
+    <title>Cart Analyzer | Revenue Dashboard</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container">
+
+        <!-- Header -->
+        <header class="header">
+            <div class="brand">
+                <div class="brand-icon">🛒</div>
+                <div>
+                    <h1>Cart<span>Analyzer</span></h1>
+                    <p>Checkout insights &amp; revenue recovery</p>
+                </div>
+            </div>
+
+            <button type="button" id="resetDemoBtn" class="btn btn-outline">
+                <span>↻</span> Load Sample Data
+            </button>
+        </header>
+
+        <!-- Dashboard Introduction -->
+        <section class="welcome">
+            <div>
+                <span class="eyebrow">DASHBOARD OVERVIEW</span>
+                <h2>Track. Analyze. Recover.</h2>
+                <p>Monitor customer checkout activity and discover opportunities to recover lost sales.</p>
+            </div>
+            <div class="welcome-icon" aria-hidden="true">📊</div>
+        </section>
+
+        <!-- KPI Cards -->
+        <section class="kpi-grid" aria-label="Dashboard metrics">
+
+            <article class="card kpi-card">
+                <div class="kpi-top">
+                    <span class="kpi-label">Total Sessions</span>
+                    <span class="kpi-icon purple">▤</span>
+                </div>
+                <p class="kpi-value" id="totalSessions">0</p>
+                <span class="kpi-sub">Total carts tracked</span>
+            </article>
+
+            <article class="card kpi-card">
+                <div class="kpi-top">
+                    <span class="kpi-label">Abandonment Rate</span>
+                    <span class="kpi-icon red">↘</span>
+                </div>
+                <p class="kpi-value text-danger" id="abandonmentRate">0%</p>
+                <span class="kpi-sub" id="abandonedCountText">0 carts dropped</span>
+            </article>
+
+            <article class="card kpi-card">
+                <div class="kpi-top">
+                    <span class="kpi-label">Lost Revenue</span>
+                    <span class="kpi-icon orange">$</span>
+                </div>
+                <p class="kpi-value" id="lostRevenue">$0.00</p>
+                <span class="kpi-sub">Potential revenue lost</span>
+            </article>
+
+            <article class="card kpi-card">
+                <div class="kpi-top">
+                    <span class="kpi-label">Recovery Rate</span>
+                    <span class="kpi-icon green">↗</span>
+                </div>
+                <p class="kpi-value text-success" id="recoveryRate">0%</p>
+                <span class="kpi-sub" id="recoveredRevenueText">$0 recovered</span>
+            </article>
+
+        </section>
+
+        <!-- Main Content -->
+        <div class="main-layout">
+
+            <!-- Record Session Form -->
+            <section class="card form-section">
+                <div class="section-heading">
+                    <div>
+                        <span class="eyebrow">NEW RECORD</span>
+                        <h2>Record Checkout Session</h2>
+                    </div>
+                    <span class="heading-icon">＋</span>
+                </div>
+
+                <p class="section-description">
+                    Enter the customer and cart details below.
+                </p>
+
+                <form id="cartForm" novalidate>
+
+                    <div class="form-group">
+                        <label for="customerName">Customer Name / ID <span>*</span></label>
+                        <input
+                            type="text"
+                            id="customerName"
+                            placeholder="e.g. Sarah Khan"
+                            autocomplete="off"
+                            required
+                        >
+                        <small class="error-msg" id="nameError"></small>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="cartValue">Cart Value ($) <span>*</span></label>
+                            <input
+                                type="number"
+                                id="cartValue"
+                                min="0.01"
+                                step="0.01"
+                                placeholder="120.50"
+                                required
+                            >
+                            <small class="error-msg" id="valueError"></small>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="itemCount">Items Count <span>*</span></label>
+                            <input
+                                type="number"
+                                id="itemCount"
+                                min="1"
+                                step="1"
+                                placeholder="3"
+                                required
+                            >
+                            <small class="error-msg" id="itemsError"></small>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="sessionStatus">Checkout Status <span>*</span></label>
+                        <select id="sessionStatus" required>
+                            <option value="Completed">Completed — Purchased</option>
+                            <option value="Abandoned" selected>Abandoned — Left Cart</option>
+                            <option value="Recovered">Recovered — Sale Recovered</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group" id="reasonGroup">
+                        <label for="abandonReason">Abandonment Reason</label>
+                        <select id="abandonReason">
+                            <option value="High Shipping Costs">High Shipping Costs</option>
+                            <option value="Complicated Checkout">Complicated Checkout</option>
+                            <option value="Payment Gateway Failure">Payment Gateway Failure</option>
+                            <option value="Just Browsing / Window Shopping">Just Browsing / Window Shopping</option>
+                            <option value="Found Cheaper Elsewhere">Found Cheaper Elsewhere</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary full-width">
+                        <span>＋</span> Add Session Record
+                    </button>
+                </form>
+            </section>
+
+            <!-- Reasons Breakdown -->
+            <section class="card insights-section">
+                <div class="section-heading">
+                    <div>
+                        <span class="eyebrow">CUSTOMER INSIGHTS</span>
+                        <h2>Why Customers Leave</h2>
+                    </div>
+                    <span class="heading-icon">◉</span>
+                </div>
+
+                <p class="section-description">
+                    Understand the reasons customers abandon their shopping carts.
+                </p>
+
+                <div id="reasonsBreakdown" class="reasons-list">
+                    <!-- Reason bars are generated by script.js -->
+                    <div class="empty-insight">
+                        <span>📈</span>
+                        <p>Add session records to see customer insights.</p>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+
+        <!-- Session History -->
+        <section class="card table-section">
+            <div class="table-header">
+                <div>
+                    <span class="eyebrow">RECORD MANAGEMENT</span>
+                    <h2>Session History</h2>
+                    <p class="section-description">
+                        Review, filter and manage checkout records.
+                    </p>
+                </div>
+
+                <div class="table-controls">
+                    <div class="filter-group">
+                        <label for="filterStatus">Status</label>
+                        <select id="filterStatus">
+                            <option value="All">All Carts</option>
+                            <option value="Abandoned">Abandoned</option>
+                            <option value="Completed">Completed</option>
+                            <option value="Recovered">Recovered</option>
+                        </select>
+                    </div>
+
+                    <button type="button" id="clearAllBtn" class="btn btn-danger-sm">
+                        Clear All
+                    </button>
+                </div>
+            </div>
+
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Customer</th>
+                            <th>Items</th>
+                            <th>Cart Value</th>
+                            <th>Status</th>
+                            <th>Reason</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="cartTableBody">
+                        <!-- Session rows are generated by script.js -->
+                    </tbody>
+                </table>
+            </div>
+
+            <div id="emptyMessage" class="empty-state">
+                <span class="empty-icon">🛍️</span>
+                <h3>No sessions found</h3>
+                <p>Add a checkout record or load sample data to get started.</p>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>🛒 Cart Analyzer</p>
+            <span>Shopping insights &amp; revenue recovery dashboard</span>
+        </footer>
+
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
